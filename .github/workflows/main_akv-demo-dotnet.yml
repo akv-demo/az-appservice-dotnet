@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'akv-demo-dotnet'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_458743D1E2A748B09D6DC4B0A0620BB8 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
