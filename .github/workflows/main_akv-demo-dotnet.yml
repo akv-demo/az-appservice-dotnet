@@ -51,7 +51,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'akv-demo-dotnet'
-          slot-name: 'Production'
+          app-name: 'az-appservice-dotnet'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
