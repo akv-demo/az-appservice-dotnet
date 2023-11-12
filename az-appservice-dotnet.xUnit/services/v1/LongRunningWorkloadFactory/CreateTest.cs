@@ -1,6 +1,6 @@
 namespace az_appservice_dotnet.xUnit.services.v1.LongRunningWorkloadFactory;
 
-public class Create
+public class CreateTest
 {
     [Fact]
     public void Create_shouldReturnLongRunningWorkload()

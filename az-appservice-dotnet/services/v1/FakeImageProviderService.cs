@@ -2,24 +2,14 @@ namespace az_appservice_dotnet.services.v1;
 
 public class FakeImageProviderService : IImageProviderService
 {
-    public enum FillType
+    public IImageProviderService.FileObject GetFileObject(string imageName, uint sizeInMb, IImageProviderService.FillType fillType = IImageProviderService.FillType.Random)
     {
-        Zero,
-        Random
-    }
-
-    private readonly string _filePath;
-    private readonly string _imageName;
-
-    public FakeImageProviderService(string imageName,uint sizeInMb, FillType fillType = FillType.Random)
-    {
-        _imageName = imageName;
         var tempFile = Path.GetTempFileName();
         // create an byte array of 1 MB
         var buffer = new byte[1024 * 1024];
         var tempFileStream = new FileStream(tempFile, FileMode.Append);
 
-        if (fillType == FillType.Zero)
+        if (fillType == IImageProviderService.FillType.Zero)
         {
             for (var i = 0; i < sizeInMb; i++)
             {
@@ -37,16 +27,7 @@ public class FakeImageProviderService : IImageProviderService
         }
 
         tempFileStream.Close();
-        _filePath = tempFile;
-    }
 
-    public string GetFilePath()
-    {
-        return _filePath;
-    }
-    
-    public string GetImageName()
-    {
-        return _imageName;
+        return new IImageProviderService.FileObject(imageName, tempFile);
     }
 }

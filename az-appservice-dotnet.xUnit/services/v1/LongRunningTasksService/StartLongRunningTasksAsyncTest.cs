@@ -4,12 +4,12 @@ using Moq;
 
 namespace az_appservice_dotnet.xUnit.services.v1.LongRunningTasksService;
 
-public class StartLongRunningTasksAsync
+public class StartLongRunningTasksAsyncTest
 {
     readonly Mock<ILongRunningWorkload> _fakeWorkload = new();
     readonly Mock<ILongRunningWorkloadFactory> _fakeFactory = new();
 
-    public StartLongRunningTasksAsync()
+    public StartLongRunningTasksAsyncTest()
     {
         _fakeFactory.Setup(x =>
             x.Create(It.IsAny<uint>())).Returns(_fakeWorkload.Object);

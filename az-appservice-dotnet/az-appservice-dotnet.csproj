@@ -9,4 +9,7 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.36.0" />
+  </ItemGroup>
 </Project>

@@ -3,12 +3,12 @@ using Moq;
 
 namespace az_appservice_dotnet.xUnit.services.v1.LongRunningTasksService;
 
-public class GetLongRunningTasks
+public class GetLongRunningTasksTest
 {
     readonly Mock<ILongRunningWorkload> _fakeWorkload = new();
     readonly Mock<ILongRunningWorkloadFactory> _fakeFactory = new();
     
-    public GetLongRunningTasks()
+    public GetLongRunningTasksTest()
     {
         _fakeFactory.Setup(x =>
             x.Create(It.IsAny<uint>())).Returns(_fakeWorkload.Object);

@@ -1,6 +1,6 @@
 namespace az_appservice_dotnet.xUnit.models.v1.LongRunningWorkloads;
 
-public class Progress
+public class ProgressTest
 {
     [Fact]
     public void Progress_shouldReturnZeroOnInit()

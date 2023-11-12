@@ -1,4 +1,4 @@
-namespace az_appservice_dotnet;
+namespace az_appservice_dotnet.routing.v1;
 
 public static class RouteGroupBuilderBlobs
 {

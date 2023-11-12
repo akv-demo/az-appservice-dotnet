@@ -1,6 +1,6 @@
-namespace az_appservice_dotnet.nUnit.services.v1;
+namespace az_appservice_dotnet.nUnit.services.v1.FakeFileProviderService;
 
-public class FakeFileProviderService
+public class GetFileObjectTest
 {
     // a list of strings to hold the file paths
     private List<String> _filePaths = new();
@@ -25,16 +25,16 @@ public class FakeFileProviderService
     }
 
     [Test]
-    public void FakeFileProviderService_shouldReturnFilePath()
+    public void GetFileObject_shouldReturnFilePath()
     {
         // Arrange
-        var sut = new az_appservice_dotnet.services.v1.FakeImageProviderService(2);
+        var sut = new az_appservice_dotnet.services.v1.FakeImageProviderService();
         // Act
-        var filePath = sut.GetFilePath();
-        _filePaths.Add(filePath);
+        var file = sut.GetFileObject("test", 2);
+        _filePaths.Add(file.Path);
         // Assert
-        Assert.True(File.Exists(filePath));
-        var fileInfo = new FileInfo(filePath);
+        Assert.True(File.Exists(file.Path));
+        var fileInfo = new FileInfo(file.Path);
         Assert.True(2 * 1024 * 1024 == fileInfo.Length);
     }
 }
