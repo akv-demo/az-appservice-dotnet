@@ -28,7 +28,7 @@ static class Program
         
         var app = builder.Build();
         
-        CheckProvidersHealth(app);
+        // CheckProvidersHealth(app);
         
         app.MapGet("/", () =>
         {
