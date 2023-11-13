@@ -1,0 +1,1 @@
+Azure providers require integration tests
