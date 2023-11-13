@@ -23,11 +23,11 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release az-appservice-dotnet
 
       - name: dotnet publish
         run: |
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp az-appservice-dotnet
           ls -la ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
