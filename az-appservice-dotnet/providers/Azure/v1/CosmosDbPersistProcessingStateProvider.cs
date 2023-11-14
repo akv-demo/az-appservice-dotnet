@@ -1,7 +1,5 @@
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
-using az_appservice_dotnet.services;
 using az_appservice_dotnet.services.v1.State;
 using az_appservice_dotnet.services.v1.State.dependencies;
 using Microsoft.Azure.Cosmos;
@@ -98,9 +96,11 @@ public class CosmosDbPersistProcessingStateProvider : IPersistProcessingStatePro
 
     public Task<IProcessingStateService.State> CreateStateAsync(in IProcessingStateService.State state)
     {
+        var cs = new CosmosState(Guid.NewGuid().ToString(), state);
+        Console.WriteLine(
+            $"State({cs.Id}) change requested {state.Status}: file={state.FileName}, originalUrl={state.OriginalFileUrl}, processedUrl={state.ProcessedFileUrl}");
         return
-            _container.CreateItemAsync(
-                    new CosmosState(Guid.NewGuid().ToString(), state), new PartitionKey(state.TaskId))
+            _container.CreateItemAsync(cs, new PartitionKey(state.TaskId))
                 .ContinueWith(cs => (IProcessingStateService.State)cs.Result.Resource);
     }
 
@@ -119,6 +119,8 @@ public class CosmosDbPersistProcessingStateProvider : IPersistProcessingStatePro
 
     public Task<IProcessingStateService.State> UpdateStateAsync(in IProcessingStateService.State state)
     {
+        Console.WriteLine(
+            $"State({(string)state.Id}) change requested {state.Status}: file={state.FileName}, originalUrl={state.OriginalFileUrl}, processedUrl={state.ProcessedFileUrl}");
         return _container.ReplaceItemAsync<CosmosState>(state, state.Id, new PartitionKey(state.TaskId))
             .ContinueWith(t => (IProcessingStateService.State)t.Result.Resource);
     }

@@ -37,6 +37,7 @@ public static class RouteGroupBuilderImages
     {
         uint.TryParse(context.Request.Query["size"].ToString(), out var size);
         if (size == 0) size = 10;
+        if (size > 100) size = 100;
 
         var name = context.Request.Query["name"].ToString();
         if (string.IsNullOrEmpty(name))

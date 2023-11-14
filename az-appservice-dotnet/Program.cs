@@ -27,7 +27,8 @@ static class Program
         builder.Services.AddSingleton<IBlobService, BlobService>();
         builder.Services.AddSingleton<IProcessingStateService, ProcessingStateService>();
         builder.Services.AddSingleton<IStateMonitor, ConsoleMonitor>();
-        builder.Services.AddSingleton<IImageProcessorService, NullImageProcessorService>();
+        builder.Services.AddSingleton<IImageProcessorService, UpsideDownImageProcessorService>();
+        builder.Services.AddSingleton<NullImageProcessorService>();
         
         builder.Services.AddSingleton<ProducerService>();
         builder.Services.AddSingleton<ProcessorService>();

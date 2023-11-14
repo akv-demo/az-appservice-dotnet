@@ -15,7 +15,7 @@ public class ConsoleMonitor: IStateMonitor
     {
         _processingStateService.ListenToStateChanges(state =>
         {
-            Console.WriteLine($"State changed to {state.Status}: file={state.FileName}, originalUrl={state.OriginalFileUrl}, processedUrl={state.ProcessedFileUrl}");
+            Console.WriteLine($"State({(string)state.Id}) change received {state.Status}: file={state.FileName}, originalUrl={state.OriginalFileUrl}, processedUrl={state.ProcessedFileUrl}");
         });
     }
 }
