@@ -4,6 +4,21 @@ using Azure.Messaging.ServiceBus;
 
 namespace az_appservice_dotnet.providers.Azure.v1;
 
+/**
+ * <summary>
+ * Known bug/feature: the provider makes a lookup to IPersistProcessingStateProvider in order
+ * to find the state by the ID extracted from the message. By the moment the message is
+ * read from the queue, the state might be already changed in the database.
+ *
+ * So the message sent for change to State1 can cause the propagation of the State2. It would not
+ * be a problem if the State2 had not its own message sent to the queue. In this case the subscriber
+ * will receive 2 notification for State2 and none for State1.
+ *
+ * Generally speaking, it it correct behaviour, but still might cause the problem with handling the
+ * some states twice and missing the others. 
+ * </summary>
+ */
+
 public class AzureSbSubscribeProcessingStateProvider : ISubscribeProcessingStateProvider
 {
     private readonly ServiceBusProcessor _processor;

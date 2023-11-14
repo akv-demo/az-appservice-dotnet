@@ -23,7 +23,7 @@ public class StoreBlobAsyncTest: IClassFixture<FileProviderFixture>
         var provider = _containerFixture.GetProvider();
         var fileObject = _fileProviderFixture.GetFileObject("test.bin",1);
         // Act
-        var actual = await provider.StoreBlobAsync(fileObject.Name, fileObject.Path);
+        var actual = await provider.UploadBlobAsync(fileObject.Name, fileObject.Path);
         _containerFixture.DisposableBag.Add(fileObject.Name);
         // Assert
         var readResponse = await _containerFixture.ContainerClient.GetBlobClient(fileObject.Name).ExistsAsync();
@@ -42,7 +42,7 @@ public class StoreBlobAsyncTest: IClassFixture<FileProviderFixture>
         var provider = _containerFixture.GetProvider();
         var fileObject = new IFileProviderService.FileObject("test.bin","/nonexistent");
         // Act
-        var exception = await Record.ExceptionAsync(() => provider.StoreBlobAsync(fileObject.Name, fileObject.Path));
+        var exception = await Record.ExceptionAsync(() => provider.UploadBlobAsync(fileObject.Name, fileObject.Path));
         // Assert
         Assert.NotNull(exception);
         Assert.IsType<AggregateException>(exception);

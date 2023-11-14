@@ -38,7 +38,7 @@ public class ProducerService
             var state2 = await _processingStateService.MoveToUploadingStateAsync(state1);
             try
             {
-                var blobUri = await _blobService.StoreBlobAsync(fileObject.Name, fileObject.Path);
+                var blobUri = await _blobService.UploadBlobAsync(fileObject.Name, fileObject.Path);
                 // TODO: not sure is it necessary to await the last call
                 await _processingStateService.MoveToWaitingForProcessingStateAsync(state2, blobUri.ToString());
             }

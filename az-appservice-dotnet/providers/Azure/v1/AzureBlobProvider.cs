@@ -1,4 +1,3 @@
-using az_appservice_dotnet.services;
 using az_appservice_dotnet.services.v1.Blob.dependencies;
 using Azure.Storage.Blobs;
 
@@ -23,7 +22,7 @@ public class AzureBlobProvider : IBlobProvider
         _containerClient = containerClient;
     }
 
-    public Task<Uri> StoreBlobAsync(string name, string localFilePath)
+    public Task<Uri> UploadBlobAsync(string name, string localFilePath)
     {
         var blobClient = _containerClient.GetBlobClient(name);
         return blobClient.UploadAsync(localFilePath, true)
@@ -31,6 +30,17 @@ public class AzureBlobProvider : IBlobProvider
             {
                 if (task.Exception != null) throw task.Exception;
                 return blobClient.Uri;
+            });
+    }
+
+    public Task<bool> DownloadBlobAsync(string name, string localFilePath)
+    {
+        var blobClient = _containerClient.GetBlobClient(name);
+        return blobClient.DownloadToAsync(localFilePath)
+            .ContinueWith(task =>
+            {
+                if (task.Exception != null) throw task.Exception;
+                return true;
             });
     }
 }

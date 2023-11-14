@@ -3,7 +3,7 @@ using az_appservice_dotnet.services.v1.State.dependencies;
 
 namespace az_appservice_dotnet.services.v1.State;
 
-public class ProcessingStateService : IProcessingStateService, IDisposable
+public class ProcessingStateService : IProcessingStateService
 {
     private readonly IPublishProcessingStateProvider _publishProcessingStateProvider;
     private readonly ISubscribeProcessingStateProvider _subscribeProcessingStateProvider;
@@ -83,24 +83,9 @@ public class ProcessingStateService : IProcessingStateService, IDisposable
         return _persistProcessingStateProvider.ListStatesAsync();
     }
 
-
-    private IProcessingStateService.StateChangeHandler? _stateChangeHandler;
-    public void ListenToStateChanges(in IProcessingStateService.StateChangeHandler onStateChange)
+    public void ListenToStateChanges(IProcessingStateService.StateChangeHandler onStateChange)
     {
-        if (_stateChangeHandler != null)
-        {
-            _subscribeProcessingStateProvider.RemoveStateChangeHandler(_stateChangeHandler);
-        }
-
-        _stateChangeHandler = onStateChange;
-        _subscribeProcessingStateProvider.AddStateChangeHandler(_stateChangeHandler);
-    }
-
-    public void Dispose()
-    {
-        if (_stateChangeHandler != null)
-        {
-            _subscribeProcessingStateProvider.RemoveStateChangeHandler(_stateChangeHandler);
-        }
+        _subscribeProcessingStateProvider.RemoveStateChangeHandler(onStateChange);
+        _subscribeProcessingStateProvider.AddStateChangeHandler(onStateChange);
     }
 }
