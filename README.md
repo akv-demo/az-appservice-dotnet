@@ -1,3 +1,30 @@
+## Code overview
+
+```text
+Program
+  |
+  +-- Routing (static Map extenstion)
+  |
+  +-- Providers (Azure dependent low-level providers, tested with xUnit)
+  |     |
+  |     +-- BlobProvider (A storage for uploaded and processed images)
+  |     |
+  |     +-- CosmosDBProvider (keep state of enqueued tasks)
+  |     |
+  |     +-- AzureServiceBusPublishProvider (API to send notification about state change)
+  |     |
+  |    +-- AzureServiceBusSubscribeProvider (API to listen for incoming notifications)
+  |
+  +-- Services (Platform independent high-level services)
+        |
+        +-- ProducerService (Used by Simple Web API to enqueue tasks)
+        |
+        +-- ProcessorService (Notified on new task and processes images)
+        |
+        +-- ... utility services used by the 2 above ...
+
+```
+  
 ## API summary
 
 GET /1/ping?workload=Workload
