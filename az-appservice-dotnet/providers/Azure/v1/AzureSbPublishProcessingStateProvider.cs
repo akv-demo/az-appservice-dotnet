@@ -27,7 +27,7 @@ public class AzureSbPublishProcessingStateProvider: IPublishProcessingStateProvi
     public Task<IProcessingStateService.State> PublishStateAsync(in IProcessingStateService.State state)
     {
         var state1 = state;
-        return _sender.SendMessageAsync(new ServiceBusMessage(state.Id))
+        return _sender.SendMessageAsync(new ServiceBusMessage($"{(string)state.Id}:{(int)state.TaskId}"))
             .ContinueWith(_ => state1);
     }
 }

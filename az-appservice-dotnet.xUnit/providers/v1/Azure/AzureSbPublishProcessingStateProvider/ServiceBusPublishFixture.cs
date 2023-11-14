@@ -4,14 +4,15 @@ using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace az_appservice_dotnet.xUnit.providers.v1.Azure.AzureSbPublishProcessingStateProvider;
 
-public class ServiceBusSenderFixture : IDisposable
+public class ServiceBusPublishFixture : IDisposable
 {
     private readonly ServiceBusClient _client;
     private readonly string _topicName;
+    private readonly string _subscriptionName;
     private readonly ServiceBusClient _clientProcessor;
     private readonly List<ServiceBusProcessor> _processors = new();
 
-    public ServiceBusSenderFixture()
+    public ServiceBusPublishFixture()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", false)
@@ -21,7 +22,9 @@ public class ServiceBusSenderFixture : IDisposable
         if (connectionString == null)
             throw new("Configuration is missing the EndPointUri setting (ServiceBus:ConnectionString)");
 
-        _topicName = (configuration.GetSection("ServiceBus")["TopicName"] ?? "process-files") + "-test";
+        _topicName = (configuration.GetSection("ServiceBus")["TopicName"] ?? "process-files") + "-test-publish";
+        _subscriptionName =
+            (configuration.GetSection("ServiceBus")["SubscriptionName"] ?? "process-files-subscription");
         _client = new(connectionString);
         _clientProcessor = new(connectionString);
     }
@@ -35,6 +38,7 @@ public class ServiceBusSenderFixture : IDisposable
         }
 
         _client.DisposeAsync().AsTask().Wait();
+        _clientProcessor.DisposeAsync().AsTask().Wait();
     }
 
     public ServiceBusSender GetSender()
@@ -46,7 +50,7 @@ public class ServiceBusSenderFixture : IDisposable
         Func<ProcessMessageEventArgs, ProcessMessageEventArgs> onMessage,
         Func<ProcessErrorEventArgs, ProcessErrorEventArgs> onError)
     {
-        var processor = _clientProcessor.CreateProcessor(_topicName, "subscription1");
+        var processor = _clientProcessor.CreateProcessor(_topicName, _subscriptionName);
         processor.ProcessMessageAsync += (args) =>
         {
             onMessage.Invoke(args);
@@ -88,7 +92,7 @@ public class ServiceBusSenderFixture : IDisposable
     }
 }
 
-[CollectionDefinition("ServiceBusSender collection")]
-public class ContainerCollection : ICollectionFixture<ServiceBusSenderFixture>
+[CollectionDefinition("ServiceBusPublish collection")]
+public class ContainerCollection : ICollectionFixture<ServiceBusPublishFixture>
 {
 }

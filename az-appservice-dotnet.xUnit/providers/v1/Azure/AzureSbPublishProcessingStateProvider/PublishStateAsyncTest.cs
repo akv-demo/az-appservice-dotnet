@@ -2,10 +2,10 @@ using az_appservice_dotnet.services.v1.State;
 
 namespace az_appservice_dotnet.xUnit.providers.v1.Azure.AzureSbPublishProcessingStateProvider;
 
-[Collection("ServiceBusSender collection")]
+[Collection("ServiceBusPublish collection")]
 public class PublishStateAsyncTest : Base
 {
-    public PublishStateAsyncTest(ServiceBusSenderFixture fixture) : base(fixture)
+    public PublishStateAsyncTest(ServiceBusPublishFixture fixture) : base(fixture)
     {
     }
 
@@ -25,12 +25,12 @@ public class PublishStateAsyncTest : Base
         // Act
         var result = await _provider.PublishStateAsync(state);
         // TODO: Find a better way to wait for the message to be processed; semaphore?
-        Thread.Sleep(1000);
+        Thread.Sleep(5000);
         // Assert
         Assert.Equal(state, result);
         Assert.Empty(errors);
         Assert.Single(messages);
         var message = messages.First().Message.Body.ToString();
-        Assert.Equal(state.Id, message);
+        Assert.Equal("some-id-to-be-published:1", message);
     }
 }

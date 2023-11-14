@@ -98,6 +98,8 @@ public interface IProcessingStateService
             return new State(Id, TaskId, Status.Failed, OriginalFileUrl, ProcessedFileUrl, FileName, failureReason);
         }
     }
+    
+    public delegate void StateChangeHandler(in State state);
 
     public Task<State> CreateInitialState(in TaskId taskId, in string fileName);
     public Task<State> MoveToUploadingStateAsync(in State state);
@@ -105,5 +107,7 @@ public interface IProcessingStateService
     public Task<State> MoveToProcessingStateAsync(in State state);
     public Task<State> MoveToCompletedStateAsync(in State state, string processedFileUrl);
     public Task<State> MoveToFailedStateAsync(in State state, string? failureReason);
-    public Task<ImmutableArray<State>> GetStates();
+    public Task<ImmutableDictionary<StateId, State>> GetStates();
+    
+    public void ListenToStateChanges(in StateChangeHandler onStateChange);
 }

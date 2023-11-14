@@ -3,16 +3,19 @@ using az_appservice_dotnet.services.v1.State.dependencies;
 
 namespace az_appservice_dotnet.services.v1.State;
 
-public class ProcessingStateService : IProcessingStateService
+public class ProcessingStateService : IProcessingStateService, IDisposable
 {
     private readonly IPublishProcessingStateProvider _publishProcessingStateProvider;
+    private readonly ISubscribeProcessingStateProvider _subscribeProcessingStateProvider;
     private readonly IPersistProcessingStateProvider _persistProcessingStateProvider;
 
     public ProcessingStateService(
         IPublishProcessingStateProvider publishProcessingStateProvider,
+        ISubscribeProcessingStateProvider subscribeProcessingStateProvider,
         IPersistProcessingStateProvider persistProcessingStateProvider)
     {
         _publishProcessingStateProvider = publishProcessingStateProvider;
+        _subscribeProcessingStateProvider = subscribeProcessingStateProvider;
         _persistProcessingStateProvider = persistProcessingStateProvider;
     }
 
@@ -75,8 +78,29 @@ public class ProcessingStateService : IProcessingStateService
         return UpdateStateAsync(state.WithFailedStatus(failureReason));
     }
 
-    public Task<ImmutableArray<IProcessingStateService.State>> GetStates()
+    public Task<ImmutableDictionary<IProcessingStateService.StateId, IProcessingStateService.State>> GetStates()
     {
         return _persistProcessingStateProvider.ListStatesAsync();
+    }
+
+
+    private IProcessingStateService.StateChangeHandler? _stateChangeHandler;
+    public void ListenToStateChanges(in IProcessingStateService.StateChangeHandler onStateChange)
+    {
+        if (_stateChangeHandler != null)
+        {
+            _subscribeProcessingStateProvider.RemoveStateChangeHandler(_stateChangeHandler);
+        }
+
+        _stateChangeHandler = onStateChange;
+        _subscribeProcessingStateProvider.AddStateChangeHandler(_stateChangeHandler);
+    }
+
+    public void Dispose()
+    {
+        if (_stateChangeHandler != null)
+        {
+            _subscribeProcessingStateProvider.RemoveStateChangeHandler(_stateChangeHandler);
+        }
     }
 }

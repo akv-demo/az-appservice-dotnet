@@ -1,4 +1,3 @@
-using az_appservice_dotnet.providers.Azure.v1;
 using az_appservice_dotnet.services.v1.State;
 
 namespace az_appservice_dotnet.xUnit.providers.v1.Azure.CosmoDbPersistProcessingStateProvider;
@@ -16,7 +15,6 @@ public class ListStatesAsyncTest: Base
         // Arrange
         var created1 = await _provider.CreateStateAsync(
                 new IProcessingStateService.State(
-                    "a",
                     1,
                     IProcessingStateService.Status.Created,
                     null,
@@ -26,7 +24,6 @@ public class ListStatesAsyncTest: Base
             );
         var created2 = await _provider.CreateStateAsync(
                 new IProcessingStateService.State(
-                    "b",
                     2,
                     IProcessingStateService.Status.Created,
                     null,
@@ -41,8 +38,8 @@ public class ListStatesAsyncTest: Base
 
         // Assert
         Assert.Equal(2, read.Count());
-        Assert.Contains(read, x => x.Id == created1.Id);
-        Assert.Contains(read, x => x.Id == created2.Id);
+        Assert.True(read.ContainsKey(created1.Id));
+        Assert.True(read.ContainsKey(created2.Id));
     }
     
     // test list is empty

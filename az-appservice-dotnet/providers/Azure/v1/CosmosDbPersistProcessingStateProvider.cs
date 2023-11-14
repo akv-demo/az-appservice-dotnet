@@ -104,6 +104,12 @@ public class CosmosDbPersistProcessingStateProvider : IPersistProcessingStatePro
                 .ContinueWith(cs => (IProcessingStateService.State)cs.Result.Resource);
     }
 
+    public Task<IProcessingStateService.State> ReadStateAsync(IProcessingStateService.StateId id, TaskId taskId)
+    {
+        return _container.ReadItemAsync<CosmosState>(id, new PartitionKey(taskId))
+            .ContinueWith(task => (IProcessingStateService.State)task.Result.Resource);
+    }
+
     /*
     public IProcessingStateService.State ReadStateAsync(IProcessingStateService.StateId id)
     {
@@ -123,20 +129,21 @@ public class CosmosDbPersistProcessingStateProvider : IPersistProcessingStatePro
             .ContinueWith(t => (IProcessingStateService.State)t.Result.Resource);
     }
 
-    public async Task<ImmutableArray<IProcessingStateService.State>> ListStatesAsync()
+    public async Task<ImmutableDictionary<IProcessingStateService.StateId, IProcessingStateService.State>>
+        ListStatesAsync()
     {
         // TODO: not efficient, but works for now
         var iterator = _container.GetItemQueryIterator<CosmosState>();
-        var states = new ConcurrentQueue<IProcessingStateService.State>();
+        var states = new Dictionary<IProcessingStateService.StateId, IProcessingStateService.State>();
         while (iterator.HasMoreResults)
         {
             var response = await iterator.ReadNextAsync();
             foreach (var cs in response)
             {
-                states.Enqueue(cs);
+                states[cs.Id] = cs;
             }
         }
 
-        return states.ToImmutableArray();
+        return states.ToImmutableDictionary();
     }
 }
