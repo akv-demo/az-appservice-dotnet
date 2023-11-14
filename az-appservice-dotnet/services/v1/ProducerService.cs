@@ -28,6 +28,12 @@ public class ProducerService
         // TODO: won't it be GC'ed? ChatGPT said it won't, but need to be confirmed
         Task.Run(async () =>
         {
+            // TODO:
+            // because of CREATED immediately followed by UPLOADED
+            // it is worth to drop it off at all. Having CREATED also causes the problem:
+            // at the moment of getting the notification by the subscriber the actual status
+            // is already UPLOADED.
+            // I've kept it here just for overall consistency for a while.
             var state1 = await _processingStateService.CreateInitialState(Task.CurrentId ?? -1, fileObject.Name);
             if (state1.TaskId == -1)
             {
